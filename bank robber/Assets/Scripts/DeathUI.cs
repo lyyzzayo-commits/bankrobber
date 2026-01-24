@@ -15,7 +15,7 @@ public class DeathUI : MonoBehaviour
         playerHealth.onDied -= Show;
     }
 
-    private void Show(Health)
+    private void Show(Health _)
     {
         deathCanvas.enabled = true;
     }
