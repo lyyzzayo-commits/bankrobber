@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 public class RespawnManager : MonoBehaviour
 {
     [SerializeField] private Health playerhealth;
     [SerializeField] private Transform respawnPoint;
+
+    public event Action OnRespawnd;
 
     private void OnEnable()
     {
@@ -31,5 +34,7 @@ public class RespawnManager : MonoBehaviour
         health.ResetHp();
 
         health.gameObject.SetActive(true);
+
+        OnRespawnd?.Invoke();
     }
 } 
