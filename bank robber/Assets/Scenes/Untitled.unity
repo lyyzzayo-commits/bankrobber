@@ -352,7 +352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cd46e3ed1a86644093a09be28bb2da4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerFireInput
-  weapon: {fileID: 349370865}
+  weapon: {fileID: 599865746}
 --- !u!1 &220245951
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,7 +553,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 349370864}
-  - component: {fileID: 349370865}
   m_Layer: 0
   m_Name: Muzzle
   m_TagString: Untagged
@@ -576,25 +575,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 599865742}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &349370865
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 349370863}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b2eeb58e23258e439f4705c4b6ae740, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WeaponController
-  cam: {fileID: 1170327144}
-  muzzle: {fileID: 349370864}
-  range: 100
-  damage: 10
-  hitMask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!1 &599865741
 GameObject:
   m_ObjectHideFlags: 0
@@ -607,6 +587,7 @@ GameObject:
   - component: {fileID: 599865745}
   - component: {fileID: 599865744}
   - component: {fileID: 599865743}
+  - component: {fileID: 599865746}
   m_Layer: 0
   m_Name: Gun
   m_TagString: Untagged
@@ -708,6 +689,25 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 599865741}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &599865746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 599865741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2eeb58e23258e439f4705c4b6ae740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponController
+  cam: {fileID: 1170327144}
+  muzzle: {fileID: 349370864}
+  range: 100
+  damage: 10
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &652537481
 GameObject:
   m_ObjectHideFlags: 0
