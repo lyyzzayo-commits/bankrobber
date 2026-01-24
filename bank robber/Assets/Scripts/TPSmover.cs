@@ -23,9 +23,9 @@ public class TpsMover : MonoBehaviour
     private int pendingMoveFrames;      // 탭 보장 프레임 카운트
     private float vY;                   // 수직 속도
 
-    public void OnMove(InputValue value)
+    public void OnMove(InputAction.CallbackContext ctx)
     {
-        moveInput = value.Get<Vector2>();
+        moveInput = ctx.ReadValue<Vector2>();
 
         // 입력이 0이 아니면 "탭 보장"을 예약
         if (moveInput.sqrMagnitude > 0f)
@@ -35,11 +35,11 @@ public class TpsMover : MonoBehaviour
         }
     }
 
-    public void OnJump(InputValue value)
+    public void OnJump(InputAction.CallbackContext ctx)
     {
         if (controller == null) return;
 
-        if (value.isPressed && controller.isGrounded)
+        if (ctx.performed && controller.isGrounded)
         {
             // v = sqrt(2 * h * -g)  (g는 음수)
             vY = Mathf.Sqrt(2f * jumpHeight * -gravity);

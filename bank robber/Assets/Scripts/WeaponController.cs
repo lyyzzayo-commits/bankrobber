@@ -22,7 +22,6 @@ public class WeaponController : MonoBehaviour
             if (hit.collider.TryGetComponent<IDamageable>(out var target))
             {
                 target.TakeDamage(damage);
-                Debug.Log("맞춤");
             }
 
             // 임팩트 연출

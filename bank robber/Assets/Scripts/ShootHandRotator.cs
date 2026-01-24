@@ -6,38 +6,62 @@ public class ShootHandRotator : MonoBehaviour
     [SerializeField] private Camera defaultCamera;
     [SerializeField] private Camera aimCamera;
 
-    [Header("Gun Follow (no parenting)")]
-    [SerializeField] private Transform gun;                // 총 루트(부모로 붙이지 않을 것)
-    [SerializeField] private Vector3 gunLocalPosOffset;    // 손 기준 로컬 위치 오프셋
-    [SerializeField] private Vector3 gunLocalRotOffset;    // 손 기준 로컬 회전 오프셋(오일러)
+    [Header("Pitch Reference")]
+    [Tooltip("If null, uses this transform's parent as the pitch reference space.")]
+    [SerializeField] private Transform pitchReference;
+
+    [Header("Pitch Limits")]
+    [SerializeField] private float pitchMin = -70f;
+    [SerializeField] private float pitchMax = 70f;
+
+    [Header("Smoothing")]
+    [SerializeField] private float turnSpeed = 25f;
+
+    [Header("Gun (rotation only)")]
+    [SerializeField] private Transform gun;
+    [SerializeField] private Vector3 gunLocalRotOffset;
+
+    private Quaternion armBindLocal;
+
+    private void Awake()
+    {
+        armBindLocal = transform.localRotation;
+    }
 
     private void LateUpdate()
     {
-        // 1) 손 회전: 로컬 -Y축이 활성 카메라 forward를 바라보게
-        Camera activeCam = GetActiveCamera();
-        if (activeCam != null)
-        {
-            Vector3 camForward = activeCam.transform.forward;
+        Camera cam = GetActiveCamera();
+        if (cam == null) return;
 
-            transform.rotation = Quaternion.FromToRotation(-Vector3.up, camForward);
-        }
+        Transform reference = pitchReference != null ? pitchReference : transform.parent;
+        if (reference == null) return;
 
-        // 2) 총을 손에 "부모처럼" 따라오게 (부모-자식 없이)
+        Vector3 localDir = reference.InverseTransformDirection(cam.transform.forward).normalized;
+
+        float pitch = -Mathf.Atan2(localDir.y, localDir.z) * Mathf.Rad2Deg;
+        pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
+
+        Quaternion pitchRot = Quaternion.AngleAxis(pitch, Vector3.right);
+        Quaternion targetLocal = armBindLocal * pitchRot;
+
+        transform.localRotation = SmoothTo(transform.localRotation, targetLocal, turnSpeed);
+
         if (gun != null)
         {
-            // 손의 로컬 기준 오프셋을 월드로 변환
-            gun.position = transform.TransformPoint(gunLocalPosOffset);
-
-            // 손 회전에 오프셋 회전 추가
-            gun.rotation = transform.rotation * Quaternion.Euler(gunLocalRotOffset);
+            Quaternion gunTargetRot = transform.rotation * Quaternion.Euler(gunLocalRotOffset);
+            gun.rotation = SmoothTo(gun.rotation, gunTargetRot, turnSpeed);
         }
     }
 
     private Camera GetActiveCamera()
     {
-        // aim이 켜지면 aim을 우선
         if (aimCamera != null && aimCamera.enabled) return aimCamera;
         if (defaultCamera != null && defaultCamera.enabled) return defaultCamera;
         return null;
+    }
+
+    private static Quaternion SmoothTo(Quaternion from, Quaternion to, float speed)
+    {
+        return Quaternion.Slerp(from, to, 1f - Mathf.Exp(-speed * Time.deltaTime));
     }
 }

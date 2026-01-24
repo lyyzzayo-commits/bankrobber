@@ -6,9 +6,9 @@ public class PlayerFireInput : MonoBehaviour
 {
     [SerializeField] private WeaponController weapon;
 
-    public void OnAttack(InputValue value)
+    public void OnAttack(InputAction.CallbackContext ctx)
     {
-        if (value.isPressed)
+        if (ctx.performed)
             weapon.Fire();
     }
 }

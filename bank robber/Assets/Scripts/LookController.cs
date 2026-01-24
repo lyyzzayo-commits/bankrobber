@@ -23,19 +23,21 @@ public class LookController : MonoBehaviour
     private float smoothedLookY;
     private float lookYVelocity;
     private bool isAiming;
+    private Quaternion cameraPivotBaseRotation;
     public static event System.Action<bool> OnAimStateChanged;
 
-    public void OnLook(InputValue value)
+    public void OnLook(InputAction.CallbackContext ctx)
     {
-        lookInput = value.Get<Vector2>();
+        Debug.Log("�?컨트롤러");
+        lookInput = ctx.ReadValue<Vector2>();
     }
 
 
-    public void OnAim(InputValue value)
+    public void OnAim(InputAction.CallbackContext ctx)
     {
-        bool next = value.isPressed;
+        bool next = ctx.ReadValue<float>() > 0.5f;
 
-        // 상태 변화 없으면 무시
+        // ?�태 변???�으�?무시
         if (isAiming == next) return;
 
         isAiming = next;
@@ -56,6 +58,10 @@ public class LookController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        if (cameraPivot != null)
+        {
+            cameraPivotBaseRotation = cameraPivot.localRotation;
+        }
     }
 
     private void Update()
@@ -76,6 +82,10 @@ public class LookController : MonoBehaviour
         pitch += pitchDelta;
         pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
 
-        cameraPivot.localRotation = Quaternion.Euler(0f, 0f, pitch);
+        if (cameraPivot != null)
+        {
+            cameraPivot.localRotation = cameraPivotBaseRotation * Quaternion.Euler(0f, 0f, pitch);
+        }
     }
 }
+
