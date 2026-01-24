@@ -61,9 +61,9 @@ public class LookController : MonoBehaviour
     private void Update()
     {
         float yaw = lookInput.x * sensitivity * Time.deltaTime;
-        float deadzone = pitchDeadzone;
+        float deadzone = Mathf.Clamp(pitchDeadzone, 0f, 0.99f);
         float absY = Mathf.Abs(lookInput.y);
-        float dzY = absY <= deadzone ? 0f : (absY - deadzone) / (1f - deadzone);
+        float dzY = absY <= deadzone ? 0f : Mathf.InverseLerp(deadzone, 1f, absY);
         float filteredY = Mathf.Sign(lookInput.y) * dzY;
         smoothedLookY = Mathf.SmoothDamp(smoothedLookY, filteredY, ref lookYVelocity, pitchSmoothTime);
         float curvedY = Mathf.Sign(smoothedLookY) * Mathf.Pow(Mathf.Abs(smoothedLookY), pitchCurve);
