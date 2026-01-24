@@ -24,10 +24,6 @@ public class RandomizeCharacterMaterial : MonoBehaviour
     [Tooltip("If checked, include SkinnedMeshRenderer")]
     [SerializeField] private bool includeSkinnedMeshes = true;
 
-    [Header("Options")]
-    [Tooltip("If renderer has multiple sub-materials, force to a single material")]
-    [SerializeField] private bool forceSingleMaterial = true;
-
     [Tooltip("Re-roll on R key (debug)")]
     [SerializeField] private bool debugReRollWithR = true;
 
@@ -40,8 +36,8 @@ public class RandomizeCharacterMaterial : MonoBehaviour
 
     private void Update()
     {
-        if (debugReRollWithR && Input.GetKeyDown(KeyCode.R))
-            ApplyRandom();
+        //if (debugReRollWithR && Input.GetKeyDown(KeyCode.R))
+            //ApplyRandom();
     }
 
     [ContextMenu("Apply Random Material")]
@@ -75,6 +71,12 @@ public class RandomizeCharacterMaterial : MonoBehaviour
             chosen.SetColor("_BaseColor", color);
         if (chosen.HasProperty("_Color"))
             chosen.SetColor("_Color", color);
+        if (chosen.HasProperty("_Metallic"))
+            chosen.SetFloat("_Metallic", 0f);
+        if (chosen.HasProperty("_Smoothness"))
+            chosen.SetFloat("_Smoothness", 1f);
+        else if (chosen.HasProperty("_Glossiness"))
+            chosen.SetFloat("_Glossiness", 1f);
 
         ApplyMaterialToAllRenderers(chosen);
     }
@@ -93,17 +95,11 @@ public class RandomizeCharacterMaterial : MonoBehaviour
 
             if (!includeSkinnedMeshes && r is SkinnedMeshRenderer) continue;
 
-            if (forceSingleMaterial)
-            {
-                r.sharedMaterial = mat;
-            }
-            else
-            {
-                var count = r.sharedMaterials.Length;
-                var arr = new Material[count];
-                for (int i = 0; i < count; i++) arr[i] = mat;
-                r.sharedMaterials = arr;
-            }
+            var count = r.sharedMaterials.Length;
+            if (count < 1) count = 1;
+            var arr = new Material[count];
+            for (int i = 0; i < count; i++) arr[i] = mat;
+            r.sharedMaterials = arr;
         }
     }
 
